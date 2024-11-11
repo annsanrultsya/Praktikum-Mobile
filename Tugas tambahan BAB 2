@@ -1,0 +1,95 @@
+// Enum untuk jurusan
+enum Jurusan {
+  Informatika,
+  TeknikElektro,
+  SistemInformasi,
+  DesainKomunikasiVisual,
+}
+
+// Mixin untuk menambahkan kegiatan
+mixin Kegiatan {
+  void belajar() {
+    print("Sedang belajar...");
+  }
+
+  void istirahat() {
+    print("Sedang makan...");
+  }
+}
+
+// Kelas abstrak Person
+abstract class Person {
+  String nama;
+  int usia;
+
+  Person(this.nama, this.usia);
+
+  void perkenalan();
+}
+
+// Kelas Mahasiswa yang mengimplementasikan Person dan menggunakan mixin Kegiatan
+class Mahasiswa extends Person with Kegiatan {
+  String npm;
+  Jurusan jurusan;
+
+  // Constructor dengan positional argument dan named argument
+  Mahasiswa(String nama, int usia, this.npm, {required this.jurusan})
+      : super(nama, usia);
+
+  // Getter
+  String get infoMahasiswa =>
+      "Nama: $nama, Usia: $usia, NPM: $npm, Jurusan: ${jurusan.name}";
+
+  // Setter
+  set gantiJurusan(Jurusan newJurusan) {
+    jurusan = newJurusan;
+  }
+
+  @override
+  void perkenalan() {
+    print(
+        "Halo, nama saya $nama dan saya adalah mahasiswa jurusan ${jurusan.name}.");
+  }
+}
+
+// Kelas MahasiswaTingkatLanjut yang mewarisi Mahasiswa
+class MahasiswaTingkatLanjut extends Mahasiswa {
+  String penelitian;
+
+  MahasiswaTingkatLanjut(
+      String nama, int usia, String npm, Jurusan jurusan, this.penelitian)
+      : super(nama, usia, npm, jurusan: jurusan);
+
+  @override
+  void perkenalan() {
+    super.perkenalan();
+    print("Saya sedang melakukan penelitian tentang $penelitian.");
+  }
+}
+
+// Fungsi utama
+void main() {
+  // Membuat objek Mahasiswa
+  Mahasiswa mhs1 =
+      Mahasiswa("Annisa", 20, "07352211107", jurusan: Jurusan.Informatika);
+  mhs1.perkenalan();
+  mhs1.belajar();
+
+  // Menggunakan getter
+  print(mhs1.infoMahasiswa);
+
+  // Menggunakan setter
+  mhs1.gantiJurusan = Jurusan.SistemInformasi;
+  print("Jurusan baru: ${mhs1.jurusan.name}");
+
+  // Membuat objek MahasiswaTingkatLanjut
+  MahasiswaTingkatLanjut mhs2 = MahasiswaTingkatLanjut(
+    "Nana",
+    23,
+    "092211128",
+    Jurusan.TeknikElektro,
+    "AI untuk Otomasi Industri",
+  );
+  mhs2.perkenalan();
+  mhs2.istirahat();
+}
