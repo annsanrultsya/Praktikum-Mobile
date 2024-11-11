@@ -1,0 +1,122 @@
+import 'dart:math';
+
+// Enum untuk Fase Proyek
+enum FaseProyek { Perencanaan, Pengembangan, Evaluasi }
+
+// Mixin untuk Kinerja
+mixin Kinerja {
+  int produktivitas = 0;
+
+  void perbaruiProduktivitas(int nilai) {
+    if (nilai < 0 || nilai > 100) {
+      throw ArgumentError('Produktivitas harus antara 0 dan 100.');
+    }
+    produktivitas = nilai;
+  }
+}
+
+// Kelas abstrak untuk Karyawan
+abstract class Karyawan with Kinerja {
+  final String nama;
+  final int umur;
+  final String peran;
+
+  Karyawan(this.nama, {required this.umur, required this.peran});
+}
+
+// Kelas untuk KaryawanTetap dan KaryawanKontrak
+class KaryawanTetap extends Karyawan {
+  KaryawanTetap(String nama, {required int umur, required String peran})
+      : super(nama, umur: umur, peran: peran);
+}
+
+class KaryawanKontrak extends Karyawan {
+  KaryawanKontrak(String nama, {required int umur, required String peran})
+      : super(nama, umur: umur, peran: peran);
+}
+
+// Kelas Produk Digital
+class Produk {
+  final String namaProduk;
+  final double harga;
+  final String kategori;
+  int jumlahTerjual;
+
+  Produk({
+    required this.namaProduk,
+    required this.harga,
+    required this.kategori,
+    this.jumlahTerjual = 0,
+  }) {
+    if ((kategori == 'NetworkAutomation' && harga < 200000) ||
+        (kategori == 'DataManagement' && harga >= 200000)) {
+      throw ArgumentError(
+          'Harga produk tidak sesuai dengan kategori yang diizinkan.');
+    }
+  }
+
+  double get hargaAkhir {
+    if (kategori == 'NetworkAutomation' && jumlahTerjual > 50) {
+      double hargaDiskon = harga * 0.85;
+      return hargaDiskon >= 200000 ? hargaDiskon : 200000;
+    }
+    return harga;
+  }
+}
+
+// Kelas Proyek
+class Proyek {
+  FaseProyek fase = FaseProyek.Perencanaan;
+  List<Karyawan> tim = [];
+  DateTime tanggalMulai;
+
+  Proyek(this.tanggalMulai);
+
+  void tambahKaryawan(Karyawan karyawan) {
+    if (tim.length >= 20) {
+      print('Tim proyek penuh! Maksimal 20 karyawan aktif.');
+      return;
+    }
+    tim.add(karyawan);
+  }
+
+  void alihkanFase() {
+    if (fase == FaseProyek.Perencanaan && tim.length >= 5) {
+      fase = FaseProyek.Pengembangan;
+      print('Fase telah dialihkan ke Pengembangan.');
+    } else if (fase == FaseProyek.Pengembangan &&
+        DateTime.now().difference(tanggalMulai).inDays > 45) {
+      fase = FaseProyek.Evaluasi;
+      print('Fase telah dialihkan ke Evaluasi.');
+    } else {
+      print('Syarat untuk beralih fase belum terpenuhi.');
+    }
+  }
+}
+
+void main() {
+  // Membuat contoh karyawan
+  var karyawan1 = KaryawanTetap('Ali', umur: 30, peran: 'Developer');
+  var karyawan2 = KaryawanKontrak('Budi', umur: 28, peran: 'NetworkEngineer');
+  karyawan1.perbaruiProduktivitas(90);
+
+  // Membuat produk digital
+  var produk1 = Produk(
+    namaProduk: 'Sistem Otomasi Jaringan',
+    harga: 250000,
+    kategori: 'NetworkAutomation',
+    jumlahTerjual: 55,
+  );
+
+  // Menampilkan informasi produk
+  print('Produk: ${produk1.namaProduk}');
+  print('Harga Awal: ${produk1.harga}');
+  print('Harga Akhir (dengan diskon jika ada): ${produk1.hargaAkhir}');
+
+  // Membuat proyek
+  var proyek = Proyek(DateTime.now().subtract(Duration(days: 50)));
+  proyek.tambahKaryawan(karyawan1);
+  proyek.tambahKaryawan(karyawan2);
+
+  proyek.alihkanFase(); // Harus memenuhi syarat untuk beralih ke Evaluasi
+}
