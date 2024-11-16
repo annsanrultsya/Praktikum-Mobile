@@ -1,7 +1,7 @@
 import 'dart:async';
 
 // b. Enum Role
-// Enum untuk merepresentasikan peran pengguna (Admin atau Customer)
+// 1. Enum untuk merepresentasikan peran pengguna (Admin atau Customer)
 enum Role { Admin, Customer }
 
 // a. 2. kelas Product
@@ -21,7 +21,8 @@ class User {
   // Atribut kelas User
   String name;
   int age;
-  late List<Product>? products; // Null Safety: diinisialisasi belakangan
+  // d. 1. Null Safety: diinisialisasi belakangan
+  late List<Product>? products;
   Role? role; // Nullable role
 
   User(this.name, this.age, this.role);
@@ -33,7 +34,7 @@ class AdminUser extends User {
   // OOP: inheritance (pewarisan)
   AdminUser(String name, int age, Role role) : super(name, age, role);
 
-  // Metode untuk menambah produk
+  // c. 2. Metode untuk menambah produk
   void addProduct(Product product) {
     try {
       // e. Exception Handling: Menangani kesalahan jika produk tidak tersedia
@@ -41,7 +42,8 @@ class AdminUser extends User {
         throw Exception(
             'Produk ${product.productName} tidak tersedia dalam stok.');
       }
-      products ??= []; // Null Safety: inisialisasi produk jika null
+      // d. 2. Null Safety: inisialisasi produk jika null
+      products ??= [];
       if (!products!.any((p) => p.productName == product.productName)) {
         products!.add(product);
         print('Produk ${product.productName} berhasil ditambahkan.');
@@ -53,7 +55,7 @@ class AdminUser extends User {
     }
   }
 
-  // Metode untuk menghapus produk berdasarkan nama produk
+  // c. 2. Metode untuk menghapus produk berdasarkan nama produk
   void removeProduct(String productName) {
     if (products != null &&
         products!.any((product) => product.productName == productName)) {
@@ -71,7 +73,7 @@ class CustomerUser extends User {
   // OOP: inheritance (pewarisan)
   CustomerUser(String name, int age, Role role) : super(name, age, role);
 
-  // Metode untuk melihat produk
+  // c. 3. Metode untuk melihat produk
   void viewProducts() {
     if (products != null && products!.isNotEmpty) {
       print('Daftar Produk:');
@@ -86,22 +88,23 @@ class CustomerUser extends User {
 }
 
 // f. Asynchronous Programming
-// Fungsi asinkron untuk mengambil detail produk dengan penundaan
+// f. 1. Fungsi asinkron untuk mengambil detail produk dengan penundaan
 Future<void> fetchProductDetails(String productName) async {
   print('Mengambil detail produk $productName...');
-  await Future.delayed(Duration(seconds: 2)); // Asynchronous programming: penundaan
+  await Future.delayed(
+      Duration(seconds: 2)); // Asynchronous programming: penundaan
   print('Detail produk $productName berhasil diambil.');
 }
 
 void main() {
-  // g. Collections: Map untuk menyimpan daftar produk
+  // f. 3. Collections: Map untuk menyimpan daftar produk
   Map<String, Product> productCatalog = {
     'Kulkas': Product('Kulkas', 1500.0, true),
     'TV': Product('TV', 800.0, true),
     'Blender': Product('Blender', 150.0, false),
   };
 
-  // g. Collections: Set untuk menjaga keunikan produk
+  // f. 4. Collections: Set untuk menjaga keunikan produk
   Set<Product> uniqueProducts = {
     productCatalog['Kulkas']!,
     productCatalog['TV']!,
